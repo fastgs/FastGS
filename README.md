@@ -12,7 +12,7 @@
 
 ### 📢 Current Status:
 - **TODO**: 
-  1. [2025.11.30] 🌱 I’m currently working on clean code (code to be released before Nov 30, 2025. Stay tuned!!!🔭
+  1. [2025.11.30] 🌱 I’m currently working on clean code (code to be released before Nov 30, 2025). Stay tuned!!!🔭
   
 <!--
 **fastgs/FastGS** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
