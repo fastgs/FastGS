@@ -53,6 +53,23 @@ Clone the repository
 ```bash
 git clone https://github.com/fastgs/FastGS.git --recursive
 ```
+
+### Dataset Directory Structure
+Please organize the dataset in the following structure:
+```bash
+datasets/
+├── mipnerf360/
+│ ├── bicycle/
+│ ├── flowers/ 
+│ ├── ... 
+├── db/
+│ ├── playroom/
+│ ├── ... 
+├── tanksandtemples/
+│ ├── truck/
+│ ├── ... 
+```
+
 ## Training
 ```bash
 bash train_base.sh
