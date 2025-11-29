@@ -9,34 +9,12 @@
     <img src="assets/teaser_fastgs.jpg" width="800px"/>
 </p>
 
-## 🚀 What Makes FastGS Special?
-
-FastGS is a **general acceleration framework** that supercharges 3D Gaussian Splatting training while maintaining Comparable rendering quality. Our method stands out with:
-
-- **⚡ Blazing Fast Training**: Achieve SOTA results within **100 seconds**. **3.32× faster** than DashGaussian on Mip-NeRF 360 dataset. **15.45× acceleration** vs vanilla 3DGS on Deep Blending.
-- **⚡ High fidelity**: Comparable rendering quality with SOTA methods
-- **🎯 Easy Integration**: Seamlessly integrates with various backbones (Vanilla 3DGS, Scaffold-GS, Mip-splatting, etc.)
-- **🛠️ Multi-Task Ready**: Proven effective across dynamic scenes, surface reconstruction, sparse-view, large-scale, and SLAM tasks
-- **💡 Memory-Efficient**: Low GPU Memory requirements make it accessible for various hardware setups
-- **🔧 Easy Deployment**: Simple post-training tool for feedforward 3DGS that works out-of-the-box
-
-## 📢 Latest Updates
-### 🔥 **[2025.11.16]** Code Released - Get Started Now! 🚀
-### 🔥 **[2025.11.17]** Pre-trained model Released 🤗!
-### 📄 **[2025.11.26]** The supplementary material has been released [here](https://arxiv.org/abs/2511.04283)!
-### 🔧 **[2025.11.27]** The tutorial has been released — see the [Wiki](https://github.com/fastgs/FastGS/wiki)!
-### 🎯 Coming Soon
-- **[2025.12.31]** 🎯 **Multi-Task Expansion**:
-  - Dynamic scenes Reconstruction: [Deformable-3D-Gaussians](https://github.com/ingra14m/Deformable-3D-Gaussians)
-  - Autonomus Driving scene: [street_gaussians](https://github.com/zju3dv/street_gaussians)
-  - Surface reconstruction: [PGSR](https://github.com/zju3dv/PGSR)
-  - Sparse-view Reconstruction: [DropGaussian](https://github.com/DCVL-3D/DropGaussian_release)
-  - Large-scale Reconstruction: [OctreeGS](https://github.com/city-super/Octree-GS/tree/main)
-  - SLAM: [Photo-SLAM](https://github.com/HuajianUP/Photo-SLAM)
-- **[2025.12.31]** 🔌 **Backbone Enhancing**: popular 3DGS variants ([Vanilla 3DGS](https://github.com/graphdeco-inria/gaussian-splatting), [Scaffold-GS](https://github.com/city-super/Scaffold-GS), [Mip-splatting](https://github.com/autonomousvision/mip-splatting), [Taming-3DGS](https://github.com/humansensinglab/taming-3dgs))
+<div align="center">
+<h1>Fast-D3DGS: Accelerating Dynamic Scene Reconstruction</h1>
+</div>
 
 
-## 🎓 Training Framework
+## 🏗️ Training Framework
 
 Our training pipeline leverages **PyTorch** and optimized **CUDA extensions** to efficiently produce high-quality trained models in record time.
 
@@ -70,7 +48,7 @@ Our testing environment uses the following CUDA configuration:
 ### 📥 Clone the Repository
 
 ```bash
-git clone https://github.com/fastgs/FastGS.git --recursive
+git clone --branch fast-d3dgs https://github.com/fastgs/FastGS.git
 cd FastGS
 ```
 
@@ -84,45 +62,55 @@ SET DISTUTILS_USE_SDK=1
 
 # Create and activate environment
 conda env create --file environment.yml
-conda activate fastgs
+conda activate fast-d3dgs
 ```
+
+### 🗂️ Data Preparation
+In this section, we follow the data processing pipeline of [4DGaussians](https://github.com/hustvl/4DGaussians).
+
+First, download the [Neur3D Dataset](https://github.com/facebookresearch/Neural_3D_Video/releases/tag/v1.0) from the official website.
+```
+├── data/
+│   | neur3d/
+│     ├── cook_spinach/
+│       ├── poses_bounds.npy
+│       ├── cam00.mp4
+│       ├── cam01.mp4
+│       ├── ...
+│     ├── cut_roasted_beef/
+|     ├── ...
+```
+Second, for processing Neur3D scenes such as cut_roasted_beef, run:
+```python
+# First, extract the frames of each video.
+python scripts/preprocess_dynerf.py --datadir data/neur3d/cut_roasted_beef
+# Second, generate point clouds from input data.
+bash colmap.sh data/neur3d/cut_roasted_beef llff
+```
+
+Third, move the `images` and `sparse` folders from `cut_roasted_beef/colmap/` to `cut_roasted_beef/`.
+
 
 ### 📂 Dataset Organization
 
 Organize your datasets in the following structure:
 
 ```bash
-datasets/
-├── mipnerf360/
-│   ├── bicycle/
-│   ├── flowers/
+data/
+├── neur3d/
+│   ├── coffee_martini/
+│       ├── images/
+│       ├── sparse/
+│   ├── cook_spinash/
 │   └── ...
-├── db/
-│   ├── playroom/
-│   └── ...
-└── tanksandtemples/
-    ├── truck/
-    └── ...
 ```
-
-The MipNeRF360 scenes are hosted by the paper authors [here](https://jonbarron.info/mipnerf360/). You can find our SfM data sets for Tanks&Temples and Deep Blending [here](https://repo-sam.inria.fr/fungraph/3d-gaussian-splatting/datasets/input/tandt_db.zip). 
 
 ## 🎯 Training & Evaluation
 
-### ⚡ FastGS (Standard)
-
-Train the base model with optimal speed and quality balance:
+### ⚡ Fast-D3DGS
 
 ```bash
-bash train_base.sh
-```
-
-### 🎨 FastGS-Big (High Quality)
-
-For enhanced quality with slightly longer training time:
-
-```bash
-bash train_big.sh
+bash train.sh
 ```
 <details>
 <summary><span style="font-weight: bold;">📋 Advanced: Command Line Arguments for train.py</span></summary>
@@ -215,26 +203,11 @@ bash train_big.sh
 </details>
 <br>
 
-Note that similar to MipNeRF360 and vanilla 3DGS, we target images at resolutions in the 1-1.6K pixel range. For convenience, arbitrary-size inputs can be passed and will be automatically resized if their width exceeds 1600 pixels. We recommend to keep this behavior, but you may force training to use your higher-resolution images by setting ```-r 1```.
-
-## 🎬 Interactive Viewers
-
-Our 3DGS representation is identical to vanilla 3DGS, so you can use the official [SIBR viewer](https://github.com/graphdeco-inria/gaussian-splatting?tab=readme-ov-file#interactive-viewers) for interactive visualization. For a quick start without local setup, try the web-based [Supersplat](https://superspl.at/editor).
-
-## 🎯 Quick Facts
-
-| Feature | FastGS | Previous Methods |
-|---------|---------|---------------------|
-| Training Time | **100 seconds** | 5-30 minutes |
-| Gaussian Efficiency | ✅ **Strict Control** | ❌ Redundant Growth |
-| Memory Usage | ✅ **Low Footprint** | ❌ High Demand |
-| Task Versatility | ✅ **6 Domains** | ❌ Limited Scope |
-
 ## 🙏 Acknowledgements
 
-This project is built upon [3DGS](https://github.com/graphdeco-inria/gaussian-splatting), [Taming-3DGS](https://github.com/humansensinglab/taming-3dgs), and [Speedy-Splat](https://github.com/j-alex-hanson/speedy-splat). We extend our gratitude to all the authors for their outstanding contributions and excellent repositories!
+This project is built upon [Deformable-3D-Gaussians](https://github.com/ingra14m/Deformable-3D-Gaussians), [4DGaussians](https://github.com/hustvl/4DGaussians), [Taming-3DGS](https://github.com/humansensinglab/taming-3dgs), [Speedy-Splat](https://github.com/j-alex-hanson/speedy-splat), and [Abs-GS](https://github.com/TY424/AbsGS). We extend our gratitude to all the authors for their outstanding contributions and excellent repositories!
 
-**License**: Please adhere to the licenses of 3DGS, Taming-3DGS, and Speedy-Splat.
+**License**: Please adhere to the licenses of Deformable-3D-Gaussians, 4DGaussians, Taming-3DGS, Speedy-Splat, and Abs-GS.
 
 Special thanks to the authors of [DashGaussian](https://github.com/YouyuChen0207/DashGaussian) for their generous support!
 
@@ -262,3 +235,4 @@ If you find this repo useful, please cite:
 </div>
 
 ---
+

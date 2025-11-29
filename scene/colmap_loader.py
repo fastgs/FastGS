@@ -42,15 +42,16 @@ CAMERA_MODEL_NAMES = dict([(camera_model.model_name, camera_model)
 
 def qvec2rotmat(qvec):
     return np.array([
-        [1 - 2 * qvec[2]**2 - 2 * qvec[3]**2,
+        [1 - 2 * qvec[2] ** 2 - 2 * qvec[3] ** 2,
          2 * qvec[1] * qvec[2] - 2 * qvec[0] * qvec[3],
          2 * qvec[3] * qvec[1] + 2 * qvec[0] * qvec[2]],
         [2 * qvec[1] * qvec[2] + 2 * qvec[0] * qvec[3],
-         1 - 2 * qvec[1]**2 - 2 * qvec[3]**2,
+         1 - 2 * qvec[1] ** 2 - 2 * qvec[3] ** 2,
          2 * qvec[2] * qvec[3] - 2 * qvec[0] * qvec[1]],
         [2 * qvec[3] * qvec[1] - 2 * qvec[0] * qvec[2],
          2 * qvec[2] * qvec[3] + 2 * qvec[0] * qvec[1],
-         1 - 2 * qvec[1]**2 - 2 * qvec[2]**2]])
+         1 - 2 * qvec[1] ** 2 - 2 * qvec[2] ** 2]])
+
 
 def rotmat2qvec(R):
     Rxx, Ryx, Rzx, Rxy, Ryy, Rzy, Rxz, Ryz, Rzz = R.flat
@@ -65,9 +66,11 @@ def rotmat2qvec(R):
         qvec *= -1
     return qvec
 
+
 class Image(BaseImage):
     def qvec2rotmat(self):
         return qvec2rotmat(self.qvec)
+
 
 def read_next_bytes(fid, num_bytes, format_char_sequence, endian_character="<"):
     """Read and unpack the next bytes from a binary file.
@@ -80,6 +83,7 @@ def read_next_bytes(fid, num_bytes, format_char_sequence, endian_character="<"):
     data = fid.read(num_bytes)
     return struct.unpack(endian_character + format_char_sequence, data)
 
+
 def read_points3D_text(path):
     """
     see: src/base/reconstruction.cc
@@ -89,21 +93,6 @@ def read_points3D_text(path):
     xyzs = None
     rgbs = None
     errors = None
-    num_points = 0
-    with open(path, "r") as fid:
-        while True:
-            line = fid.readline()
-            if not line:
-                break
-            line = line.strip()
-            if len(line) > 0 and line[0] != "#":
-                num_points += 1
-
-
-    xyzs = np.empty((num_points, 3))
-    rgbs = np.empty((num_points, 3))
-    errors = np.empty((num_points, 1))
-    count = 0
     with open(path, "r") as fid:
         while True:
             line = fid.readline()
@@ -115,12 +104,16 @@ def read_points3D_text(path):
                 xyz = np.array(tuple(map(float, elems[1:4])))
                 rgb = np.array(tuple(map(int, elems[4:7])))
                 error = np.array(float(elems[7]))
-                xyzs[count] = xyz
-                rgbs[count] = rgb
-                errors[count] = error
-                count += 1
-
+                if xyzs is None:
+                    xyzs = xyz[None, ...]
+                    rgbs = rgb[None, ...]
+                    errors = error[None, ...]
+                else:
+                    xyzs = np.append(xyzs, xyz[None, ...], axis=0)
+                    rgbs = np.append(rgbs, rgb[None, ...], axis=0)
+                    errors = np.append(errors, error[None, ...], axis=0)
     return xyzs, rgbs, errors
+
 
 def read_points3D_binary(path_to_model_file):
     """
@@ -128,7 +121,6 @@ def read_points3D_binary(path_to_model_file):
         void Reconstruction::ReadPoints3DBinary(const std::string& path)
         void Reconstruction::WritePoints3DBinary(const std::string& path)
     """
-
 
     with open(path_to_model_file, "rb") as fid:
         num_points = read_next_bytes(fid, 8, "Q")[0]
@@ -146,12 +138,13 @@ def read_points3D_binary(path_to_model_file):
             track_length = read_next_bytes(
                 fid, num_bytes=8, format_char_sequence="Q")[0]
             track_elems = read_next_bytes(
-                fid, num_bytes=8*track_length,
-                format_char_sequence="ii"*track_length)
+                fid, num_bytes=8 * track_length,
+                format_char_sequence="ii" * track_length)
             xyzs[p_id] = xyz
             rgbs[p_id] = rgb
             errors[p_id] = error
     return xyzs, rgbs, errors
+
 
 def read_intrinsics_text(path):
     """
@@ -177,6 +170,7 @@ def read_intrinsics_text(path):
                                             params=params)
     return cameras
 
+
 def read_extrinsics_binary(path_to_model_file):
     """
     see: src/base/reconstruction.cc
@@ -195,13 +189,13 @@ def read_extrinsics_binary(path_to_model_file):
             camera_id = binary_image_properties[8]
             image_name = ""
             current_char = read_next_bytes(fid, 1, "c")[0]
-            while current_char != b"\x00":   # look for the ASCII 0 entry
+            while current_char != b"\x00":  # look for the ASCII 0 entry
                 image_name += current_char.decode("utf-8")
                 current_char = read_next_bytes(fid, 1, "c")[0]
             num_points2D = read_next_bytes(fid, num_bytes=8,
                                            format_char_sequence="Q")[0]
-            x_y_id_s = read_next_bytes(fid, num_bytes=24*num_points2D,
-                                       format_char_sequence="ddq"*num_points2D)
+            x_y_id_s = read_next_bytes(fid, num_bytes=24 * num_points2D,
+                                       format_char_sequence="ddq" * num_points2D)
             xys = np.column_stack([tuple(map(float, x_y_id_s[0::3])),
                                    tuple(map(float, x_y_id_s[1::3]))])
             point3D_ids = np.array(tuple(map(int, x_y_id_s[2::3])))
@@ -230,8 +224,8 @@ def read_intrinsics_binary(path_to_model_file):
             width = camera_properties[2]
             height = camera_properties[3]
             num_params = CAMERA_MODEL_IDS[model_id].num_params
-            params = read_next_bytes(fid, num_bytes=8*num_params,
-                                     format_char_sequence="d"*num_params)
+            params = read_next_bytes(fid, num_bytes=8 * num_params,
+                                     format_char_sequence="d" * num_params)
             cameras[camera_id] = Camera(id=camera_id,
                                         model=model_name,
                                         width=width,
