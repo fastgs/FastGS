@@ -87,7 +87,7 @@ Next, download the DropGaussian-processed sparse and dense point clouds from thi
 
 ## 🎯 Training & Evaluation
 
-### ⚡ Fast-D3DGS
+### ⚡ Fast-DropGaussian
 
 ```bash
 bash train_llff.sh
