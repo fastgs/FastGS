@@ -10,7 +10,7 @@ import random
 def sampling_cameras(my_viewpoint_stack):
     ''' Randomly sample a given number of cameras from the viewpoint stack'''
 
-    num_cams = 10
+    num_cams = 3
     camlist = []
     for _ in range(num_cams):
         loc = random.randint(0, len(my_viewpoint_stack) - 1)

@@ -15,7 +15,8 @@ from scene.gaussian_model import GaussianModel
 from utils.sh_utils import eval_sh
 from diff_gaussian_rasterization_fastgs import GaussianRasterizationSettings, GaussianRasterizer
 
-def render_fastgs(viewpoint_camera, pc : GaussianModel, pipe, bg_color : torch.Tensor, mult, scaling_modifier = 1.0, override_color = None, get_flag=None, metric_map = None):
+def render_fastgs(viewpoint_camera, pc : GaussianModel, pipe, bg_color : torch.Tensor, mult, scaling_modifier = 1.0, override_color = None, 
+                  get_flag=None, metric_map = None, is_train=False, iteration=None):
     """
     Render the scene. 
     
@@ -89,6 +90,19 @@ def render_fastgs(viewpoint_camera, pc : GaussianModel, pipe, bg_color : torch.T
     else:
         colors_precomp = override_color
 
+    # DropGaussian
+    if is_train:
+        # Create initial compensation factor (1 for each Gaussian)
+        compensation = torch.ones(opacity.shape[0], dtype=torch.float32, device="cuda")
+
+        # Apply DropGaussian with compensation
+        drop_rate = 0.2 * (iteration/10000)
+        d = torch.nn.Dropout(p=drop_rate)
+        compensation = d(compensation)
+
+        # Apply to opacity
+        opacity = opacity * compensation[:, None]
+
     # Rasterize visible Gaussians to image, obtain their radii (on screen). 
     rendered_image, radii, accum_metric_counts = rasterizer(
         means3D = means3D,
@@ -103,6 +117,7 @@ def render_fastgs(viewpoint_camera, pc : GaussianModel, pipe, bg_color : torch.T
 
     # Those Gaussians that were frustum culled or had a radius of 0 were not visible.
     # They will be excluded from value updates used in the splitting criteria.
+    rendered_image = rendered_image.clamp(0, 1) # DropGaussian
     return {"render": rendered_image,
             "viewspace_points": screenspace_points,
             "visibility_filter" : (radii > 0).nonzero(),

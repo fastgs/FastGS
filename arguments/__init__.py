@@ -54,6 +54,8 @@ class ModelParams(ParamGroup):
         self._white_background = False
         self.data_device = "cuda"
         self.eval = False
+        self.n_views = 3
+        self.rand_pcd = False
         super().__init__(parser, "Loading Parameters", sentinel)
 
     def extract(self, args):
@@ -67,49 +69,36 @@ class PipelineParams(ParamGroup):
         self.convert_SHs_python = False
         self.compute_cov3D_python = False
         self.debug = False
-        self.antialiasing = False
         super().__init__(parser, "Pipeline Parameters")
 
 class OptimizationParams(ParamGroup):
     def __init__(self, parser):
-        self.iterations = 30_000
+        self.iterations = 10000
         self.position_lr_init = 0.00016
         self.position_lr_final = 0.0000016
         self.position_lr_delay_mult = 0.01
-        self.position_lr_max_steps = 30_000
-        self.feature_lr = 0.0025 
-        self.shfeature_lr = 0.005 
-        self.opacity_lr = 0.025 
+        self.position_lr_max_steps = 10000
+        self.feature_lr = 0.0025
+        self.opacity_lr = 0.05
         self.scaling_lr = 0.005
         self.rotation_lr = 0.001
-        self.percent_dense = 0.001
+        self.percent_dense = 0.01
         self.lambda_dssim = 0.2
-        self.densification_interval = 100
+        self.densification_interval = 500
         self.opacity_reset_interval = 3000
         self.densify_from_iter = 500
-        self.densify_until_iter = 15_000
-        self.densify_grad_threshold = 0.0002
+        self.densify_until_iter = 10000
+        self.densify_grad_threshold = 0.0005
+        self.random_background = False
 
-        self.prune_until_iter = 25000
-        self.min_weight = 0.7
-
-        self.prune_from_iter = 6000
-        self.prune_until_iter = 30_000
-        self.prune_interval = 3000
-        self.densify_prune_ratio = 0.45
-        self.after_densify_prune_ratio = 0.01
-        
         # fastgs parameters
         self.loss_thresh = 0.1
         self.grad_abs_thresh = 0.0012  
-        self.highfeature_lr = 0.005
+        self.highfeature_lr = 0.02
         self.lowfeature_lr = 0.0025
         self.grad_thresh = 0.0002
         self.dense = 0.001
         self.mult = 0.5      # multiplier for the compact box to control the tile number of each splat
-
-        self.random_background = False
-        self.optimizer_type = "default"
         super().__init__(parser, "Optimization Parameters")
 
 def get_combined_args(parser : ArgumentParser):
