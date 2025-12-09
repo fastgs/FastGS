@@ -62,7 +62,6 @@ def training(dataset, opt, pipe, testing_iterations, saving_iterations, checkpoi
     progress_bar = tqdm(range(first_iter, opt.iterations), desc="Training progress")
     first_iter += 1
     bg = torch.rand((3), device="cuda") if opt.random_background else background
-    img_num = -1
 
     for iteration in range(first_iter, opt.iterations + 1):
 
@@ -86,8 +85,6 @@ def training(dataset, opt, pipe, testing_iterations, saving_iterations, checkpoi
         if not viewpoint_stack:
             viewpoint_stack = scene.getTrainCameras().copy()
             viewpoint_indices = list(range(len(viewpoint_stack)))
-            if img_num == -1:
-                img_num = len(viewpoint_stack)
         rand_idx = randint(0, len(viewpoint_indices) - 1)
         viewpoint_cam = viewpoint_stack.pop(rand_idx)
         _ = viewpoint_indices.pop(rand_idx)
