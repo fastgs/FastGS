@@ -91,6 +91,7 @@ Refer to https://colmap.github.io/install.html
 
 # Tanks and Temples dataset
 python scripts/preprocess/convert_tnt.py --tnt_path your_tnt_path
+```
 
 ## 🎯 Training & Evaluation
 
