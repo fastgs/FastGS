@@ -28,6 +28,8 @@ FastGS is a **general acceleration framework** that supercharges 3D Gaussian Spl
 #### 🔥 **[2025.11.29]** The dynamic scene reconstruction code [Fast-D3DGS](https://github.com/fastgs/FastGS/tree/fast-d3dgs) has been released!
 #### 🔥 **[2025.12.03]** The sparse-view reconstruction code [Fast-DropGaussian](https://github.com/fastgs/FastGS/tree/fast-dropgaussian) has been released!
 #### 🥇 **[2026.01]** Our method was used as a component in the [winning solution](https://arxiv.org/pdf/2601.19489) (1st place🥇) of the **[SIGGRAPH Asia 2025 3DGS Fast Reconstruction Challenge](https://gaplab.cuhk.edu.cn/projects/gsRaceSIGA2025/index.html#awards)**. We sincerely thank the **3DV-CASIA** for their interest and adoption of our work.
+#### 🥇 **[2026.02]** Our work has been accepted to CVPR 2026! 🤗🤗🤗
+More details will be released soon — stay tuned!
 
 
 ## 🎯 Coming Soon
