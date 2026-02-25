@@ -23,7 +23,7 @@ from utils.general_utils import strip_symmetric, build_scaling_rotation
 
 try:
     from diff_gaussian_rasterization import SparseGaussianAdam
-except:
+except Exception:
     pass
 
 class GaussianModel:
