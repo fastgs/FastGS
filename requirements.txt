@@ -1,0 +1,6 @@
+open3d
+pytorch3d
+plyfile
+opencv-python
+lpips
+trimesh

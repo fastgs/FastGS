@@ -1,0 +1,4 @@
+# ninja log v5
+0	7396	1765356217490000000	/media/lzy/Lenovo/rensw/workingspace/Fast-PGSR/submodules/simple-knn/build/temp.linux-x86_64-cpython-37/simple_knn.o	11baa6fa1ac49041
+0	12907	1765356222990000000	/media/lzy/Lenovo/rensw/workingspace/Fast-PGSR/submodules/simple-knn/build/temp.linux-x86_64-cpython-37/ext.o	715d52b08c3d0d43
+0	29609	1765356239710000000	/media/lzy/Lenovo/rensw/workingspace/Fast-PGSR/submodules/simple-knn/build/temp.linux-x86_64-cpython-37/spatial.o	90496d07b735771f
