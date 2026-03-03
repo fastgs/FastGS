@@ -40,12 +40,11 @@ FastGS is a **general acceleration framework** that supercharges 3D Gaussian Spl
 - **Sparse-view Reconstruction** — [Fast-DropGaussian](https://github.com/fastgs/FastGS/tree/fast-dropgaussian) (based on [DropGaussian](https://github.com/DCVL-3D/DropGaussian_release)) — Released 
 - **Surface Reconstruction** — [Fast-PGSR](https://github.com/fastgs/FastGS/tree/fast-pgsr) (based on [PGSR](https://github.com/zju3dv/PGSR)) — Released 
 
-#### To Be Released After Paper Acceptance
-- **Autonomous Driving Scenes** — [street_gaussians](https://github.com/zju3dv/street_gaussians)
-- **Large-scale Reconstruction** — [OctreeGS](https://github.com/city-super/Octree-GS/tree/main)
-- **SLAM** — [Photo-SLAM](https://github.com/HuajianUP/Photo-SLAM)  
-- **Backbone Enhancing** — [Mip-splatting](https://github.com/autonomousvision/mip-splatting)
-
+#### To Be Released
+- **Backbone Enhancing** — based on [Mip-splatting](https://github.com/autonomousvision/mip-splatting)
+- **SLAM** — based on [Photo-SLAM](https://github.com/HuajianUP/Photo-SLAM) 
+- **Autonomous Driving Scenes** — based on [street_gaussians](https://github.com/zju3dv/street_gaussians)
+- **Large-scale Reconstruction** — based on [OctreeGS](https://github.com/city-super/Octree-GS/tree/main)
 
 ## 🏗️ Training Framework
 
